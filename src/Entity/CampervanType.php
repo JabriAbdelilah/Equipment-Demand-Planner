@@ -21,6 +21,9 @@ class CampervanType
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Campervan::class)]
     private $campervans;
 
+    #[ORM\Column(type: 'integer')]
+    private $price;
+
     public function __construct()
     {
         $this->campervans = new ArrayCollection();
@@ -69,6 +72,18 @@ class CampervanType
                 $campervan->setType(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

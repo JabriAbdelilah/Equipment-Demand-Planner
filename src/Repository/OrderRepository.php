@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use DateInterval;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,28 +41,64 @@ class OrderRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findByReturnStationAndDateInterval(int $stationId, DateTime $startDay, DateTime $endDay): array
+    {
+        $date = clone($startDay);
+        $date->setTime(0, 0);
+        $datePlusDay = clone($endDay);
+        $datePlusDay->setTime(23, 59);
 
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.returnStation = :stationId')
+            ->andWhere('o.status IN (:status)')
+            ->andWhere('o.endDate > :date')
+            ->andWhere('o.endDate < :datePlusDay')
+            ->setParameter('stationId', $stationId)
+            ->setParameter('status', [Order::STATUS['CONFIRMED'], Order::STATUS['IN_PROGRESS']])
+            ->setParameter('date', $date)
+            ->setParameter('datePlusDay', $datePlusDay)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByPickupStationAndDate(int $stationId, DateTime $day): array
+    {
+        $date = clone($day);
+        $date->setTime(0, 0);
+        $datePlusDay = clone($date);
+        $datePlusDay->add(new DateInterval('P1D'));
+
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.pickupStation = :stationId')
+            ->andWhere('o.status = :status')
+            ->andWhere('o.startDate > :date')
+            ->andWhere('o.startDate < :datePlusDay')
+            ->setParameter('stationId', $stationId)
+            ->setParameter('status', Order::STATUS['CONFIRMED'])
+            ->setParameter('date', $date)
+            ->setParameter('datePlusDay', $datePlusDay)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByPickupStationAndDateInterval(int $stationId, DateTime $startDay, DateTime $endDay): array
+    {
+        $date = $startDay;
+        $date->setTime(0, 0);
+        $datePlusDay = clone($endDay);
+        $datePlusDay->sub(new DateInterval('P1D'));
+        $datePlusDay->setTime(23, 59);
+
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.pickupStation = :stationId')
+            ->andWhere('o.status in (:status)')
+            ->andWhere('o.startDate > :date')
+            ->andWhere('o.startDate < :datePlusDay')
+            ->setParameter('stationId', $stationId)
+            ->setParameter('status', [Order::STATUS['CONFIRMED'], Order::STATUS['IN_PROGRESS'], Order::STATUS['DONE']])
+            ->setParameter('date', $date)
+            ->setParameter('datePlusDay', $datePlusDay)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <div class="row mt-5 d-flex justify-content-center">
+        Equipment Demand Planner
+    </div>
+    <div class="row mt-5 d-flex justify-content-center">
+        {% for station in stations %}
+            <div class="mb-3 col-md-12">
+                <h3>{{ station.station.name }}</h3>
+            </div>
+            <div class="mb-3 col-md-12">
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        {% for day in station.days %}
+                            <th scope="col">{{ day.day|date("d-m-Y") }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for equipment in allEquipments %}
+                        <tr>
+                            <td>{{ equipment.name }}</td>
+                            {% for day in station.days %}
+                                {% set booked = day.bookedEquipments|filter(eq => eq.equipment.id == equipment.id)|first %}
+                                {% set available = day.availableEquipments|filter(eq => eq.equipment.id == equipment.id)|first %}
+                                <td>
+                                    <p>Available: {{ available.quantity }}</p>
+                                    <p>Booked: {{ booked.quantity }}</p>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

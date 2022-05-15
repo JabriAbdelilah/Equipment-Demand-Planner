@@ -11,6 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: '`order`')]
 class Order
 {
+    public const STATUS = [
+        'IN_PROGRESS' => 'IN_PROGRESS',
+        'CONFIRMED' => 'CONFIRMED',
+        'CANCELLED' => 'CANCELLED',
+        'DONE' => 'DONE',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]

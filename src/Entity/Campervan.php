@@ -18,9 +18,6 @@ class Campervan
     #[ORM\Column(type: 'string', length: 255)]
     private $registrationNumber;
 
-    #[ORM\Column(type: 'integer')]
-    private $price;
-
     #[ORM\ManyToOne(targetEntity: CampervanType::class, inversedBy: 'campervans')]
     #[ORM\JoinColumn(nullable: false)]
     private $type;
@@ -49,18 +46,6 @@ class Campervan
     public function setRegistrationNumber(string $registrationNumber): self
     {
         $this->registrationNumber = $registrationNumber;
-
-        return $this;
-    }
-
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): self
-    {
-        $this->price = $price;
 
         return $this;
     }
