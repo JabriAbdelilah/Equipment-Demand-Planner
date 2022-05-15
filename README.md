@@ -27,5 +27,8 @@ HTML endpoint: https://127.0.0.1:8000/ (Display a table with planning for the ne
 
 `availableEquipments` in a specific day = In Stock + Returned from today to that specific day - Booked from today to that specific day
 
+## Database
+![database](database.png)
+
 ## Screenshot
 ![screencapture](screencapture.png)
