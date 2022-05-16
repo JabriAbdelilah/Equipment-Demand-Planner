@@ -10,13 +10,21 @@ Composer 2.0
 
 ## Install & Run
 
-Requirements: Symfony CLI, PHP >= 8.1
+Requirements: Symfony CLI, PHP >= 8.1, Composer 
 
 Clone the repository.
 
-`composer install`
+Install dependencies: `composer install`
 
-`symfony server:start`
+Configure mysql database in `.env`
+
+Create database: `php bin/console doctrine:database:create`
+
+Launch migraions: `php bin/console doctrine:migrations:migrate`
+
+Load fixtures: `php bin/console doctrine:fixtures:load`
+
+Run the application: `symfony server:start`
 
 Rest api endpoint: https://127.0.0.1:8000/api/equipments?startDate=XX&endDate=XX (Replace XX by start date and end date)
 
